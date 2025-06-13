@@ -109,6 +109,18 @@ class PrivateUserApiTests(TestCase):
         self.client = APIClient()
         self.client.force_authenticate(user=self.user)
 
+    def test_create_user_forbidden(self):
+        """Test creating a user is successul."""
+        payload = {
+            'email': 'test2@example.com',
+            'password': 'testpass123',
+            'name': 'TestName',
+        }
+        res = self.client.post(CREATE_USER_URL, payload)
+        self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
+        user = get_user_model().objects.filter(email=payload['email'])
+        self.assertFalse(user.exists())
+
     def test_retrieve_profile_success(self):
         """Test retrieving profile for logged in user."""
         res = self.client.get(ME_URL)
@@ -132,3 +144,11 @@ class PrivateUserApiTests(TestCase):
         self.assertEqual(self.user.name, payload['name'])
         self.assertTrue(self.user.check_password(payload['password']))
         self.assertEqual(res.status_code, status.HTTP_200_OK)
+
+    def test_delete_user_profile(self):
+        """Test deleting profile is forbidden"""
+        res = self.client.delete(ME_URL)
+        self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertTrue(
+            get_user_model().objects.filter(email=self.user.email).exists()
+            )

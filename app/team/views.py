@@ -14,7 +14,6 @@ from core.permissions import IsAdminOrReadOnly
 
 class TeamAPIView(viewsets.ModelViewSet):
     """View for managing team APIs."""
-    serializer_class = TeamDetailSerializer
     authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticated, IsAdminOrReadOnly]
     queryset = Team.objects.all()
@@ -29,4 +28,4 @@ class TeamAPIView(viewsets.ModelViewSet):
         """Return the serializer class for request."""
         if self.action == 'list':
             return TeamSerializer
-        return self.serializer_class
+        return TeamDetailSerializer

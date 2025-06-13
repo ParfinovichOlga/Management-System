@@ -2,6 +2,24 @@
 from rest_framework import permissions
 
 
+class IsAnonymous(permissions.BasePermission):
+    """Allow creating only unauthenticated user."""
+    def has_permission(self, request, view):
+        if request.user.is_authenticated:
+            return False
+        return True
+
+
+class ProfileOwner(permissions.BasePermission):
+    """Allow changes only for owner."""
+    def has_permission(self, request, view):
+        return request.user.is_authenticated
+
+    def has_object_permission(self, request, view, obj):
+        """Allow retrieving and updating by owner except deleting"""
+        return obj.id == request.user.id and request.method != 'DELETE'
+
+
 class IsManagerOrReadOnly(permissions.BasePermission):
     """Allow changes for manager or read only"""
     def has_permission(self, request, view):

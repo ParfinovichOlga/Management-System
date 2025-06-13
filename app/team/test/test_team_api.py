@@ -17,27 +17,27 @@ TEAM_URL = reverse('team:team-list')
 
 
 def detail_url(team_id):
-    """Create and return comment detail url."""
+    """Create and return team detail url."""
     url = reverse('team:team-detail', args=[team_id])
     return url
 
 
-class PublicCommentsAPITests(TestCase):
+class PublicTeamAPITests(TestCase):
     """Test unauthenticated API requests."""
     def setUp(self):
         self.client = APIClient()
 
     def test_auth_required(self):
-        """Test auth required for retrieving list of comments"""
+        """Test auth required for retrieving list of teams"""
         res = self.client.get(TEAM_URL)
         self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
 
 
-class PrivateCommentsUserAPITests(TestCase):
+class PrivateTeamUserAPITests(TestCase):
     """Test authentecated user API requests."""
     def setUp(self):
         self.client = APIClient()
-        self.user = get_user_model().objects.create(
+        self.user = get_user_model().objects.create_user(
             email='testuser@example.com',
             password='test123'
         )
@@ -66,7 +66,7 @@ class PrivateCommentsUserAPITests(TestCase):
         self.assertEqual(res.data, serializer.data)
 
 
-class PrivateCommentsAdminUserAPITests(TestCase):
+class PrivateTeamAdminUserAPITests(TestCase):
     """Test authentecated user API requests."""
     def setUp(self):
         self.client = APIClient()

@@ -32,7 +32,6 @@ class ManageTasksAPIView(mixins.DestroyModelMixin,
                          mixins.RetrieveModelMixin,
                          viewsets.GenericViewSet):
     """View for managing task APIs."""
-    serializer_class = TaskDetailSerializer
     authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticated]
     queryset = Task.objects.all()
@@ -47,7 +46,7 @@ class ManageTasksAPIView(mixins.DestroyModelMixin,
         """Return the serializer class for request."""
         if self.action == 'list':
             return TaskSerializer
-        return self.serializer_class
+        return TaskDetailSerializer
 
 
 class CommentAPIView(viewsets.ModelViewSet):
